@@ -1,0 +1,232 @@
+{% import 'bootstrap/wtf.html' as wtf %}
+<!DOCTYPE html>
+<html lang="en-za">
+<head>
+    <title>{{ title }}</title>
+    <meta charet="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,width=device-width">
+
+    <link rel="stylesheet" href="../app/static/css/bootstrap.css">
+    <link rel="stylesheet" href="../app/static/css/styles.css">
+    <link rel="stylesheet" href="../app/static/css/zipline.css">
+    <link rel="stylesheet" href="../app/static/fonts/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="../app/static/js/jquery-3.3.1.js"></script>
+    <script src="../app/static/js/bootstrap.js"></script>
+        <style>
+        .dropdown-menu{
+            background: #0a2c38;
+        }
+        .dropdown-menu a{
+            max-height: 40px;
+            border-bottom: 1px solid #02232f;
+        }
+        #card-nav{
+            background: rgba(0,0,0,0.4);
+            position: absolute;
+            left: 0;
+            width: 100%;
+            padding: 2px 10px 0 2px;
+            border: 0px;
+        }
+        #card-nav a{
+            color: #fff !important;
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="container-fluid">
+<section class="row" id="home">
+    <nav class="navbar navbar-inverse navbar-fixed-top custom-nav">
+        {% if current_user.is_authenticated %}
+            <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for('index') }}">
+                            PyraSpace
+                        </a>
+
+                        <button class="navbar-toggle" data-toggle="collapse" data-target="#nav">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="collapse navbar-collapse" id="nav">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#explore">Explore <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ url_for('index') }}" title="All Items on PyraSpace" >All</a></li>
+                                    <li><a href="{{ url_for('books') }}" title="Exclusively Browse from a wide range of books!" >Books</a></li>
+                                    <li><a href="{{ url_for('electronics') }}" title="Get Gadgets!" >Electronics</a></li>
+                                    <li><a href="{{ url_for('other') }}" title="And.. the other stuff." >Other</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('cart') }}" title="cart"><span class="glyphicon glyphicon-shopping-cart"></span>  Basket <span class="badge">{{ items_in_cart }}</span></a>
+                            </li>
+                            <li><a href="{{ url_for('profile_landing') }}" title="profile"><span class="glyphicon glyphicon-user"></span> {{ current_user.first_name }}'s Profile</a></li>
+                            <li><a href="{{ url_for('logout') }}" title="Logout"><span class="glyphicon glyphicon-off"></span><span class="hidden-sm hidden-md hidden-lg"> Logout</span></a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{{ url_for('index') }}">
+                            PyraSpace
+                        </a>
+                        <button class="navbar-toggle" data-toggle="collapse" data-target="#nav">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="collapse navbar-collapse" id="nav">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#how" title="coming soon" disabled>How it works</a></li>
+                            <li><a href="#about" title="coming soon" disabled>About Us</a></li>
+                            <li><a href="#contact" title="coming soon" disabled>Contact Us</a></li>
+                            <li>
+                                <button class="btn btn-default btn-lg" onclick="location = '{{ url_for('register') }}'" data-toggle="modal" data-target="#login-modal">
+
+                                    <span class="glyphicon glyphicon-log-in"></span> Log in
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </nav>
+
+</section>
+
+<section class="row content">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+            <h2>{{ product.title }}</h2>
+            <hr style="margin: 0 0 16px 0;">
+            <div class="row">
+                <div class="col-sm-5"><img src="../{{ product.image_link }}" class="img-responsive" alt="item title"></div>
+                <div class="col-sm-4">
+                    <h4 class="text-muted">{{ product.code   }}</h4>
+                    <h4>Price: <b>R {{ product.price }}</b></h4>
+{% if product.status == 'available' %}
+        <p><label class="label label-success">available</label></p>
+        {% elif product.status == 'sold' %}
+        <p><label class="label label-danger">sold</label></p>
+        {% endif %}                    {% if product.location == 'up_hatfield' %}
+            University of Pretoria, Hatfield
+        {% elif product.location == 'univen' %}
+            <p>University of Venda</p>
+        {% elif product.location == 'up_groenkloof' %}
+            <p>University of Pretoria, Groenkloof</p>
+         {% elif product.location == 'up_mamelodi' %}
+            <p>University of Pretoria, Mamelodi</p>
+        {% elif product.location == 'up_prinshof' %}
+            <p>University of Pretoria, Prinshof</p>
+        {% endif %}
+                    <a href="javascript: void()" class="btn btn-info btn-block" title="Share" data-toggle="modal" data-target="#share-modal">Share</a>
+                    {% if product.status == 'available' %}
+                        <a  href="javascript: void()" class="btn btn-primary btn-block" style = " border:0px solid transparent !important;"  id="addToCart{{ product.id }}" onclick="addToCartHandler(this)" >
+                        <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart
+                        </a>
+                    {% elif product.status == 'sold' %}
+                        <a href="javascript: void()" class="btn btn-primary btn-block"  disabled id="addToCart{{ product.id }}"  >
+                        <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart
+                    </a>
+                     {% endif %}
+                    <p class="text-small text-center">
+                        <a href="{{ url_for('index') }}">Store</a> | <a href="{{ url_for('add_item') }}">Add New Product</a>
+                    </p>
+                    <!-- share modal -->
+                    <div class="modal fade" id="share-modal" role="dialog">
+                        <div class="modal-dialog modal-md">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h2 class="modal-title">Share the url to item</h2>
+                                </div>
+                                <div class="modal-body">
+                                   <h4>https://www.pyraspace.com/{{ product.id }}</h4>
+                                   <small class="text-info">Copy the url above and share</small>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9">
+                    <h4>Description</h4>
+                    <p>{{ product.description }}</p>
+                </div>
+            </div>
+        </div>
+{#        <div class="col-sm-3">#}
+{#            <h4>People also bought:</h4>#}
+{#            <!-- loop for 3 items starts here -->#}
+{#            <div class="row">#}
+{#                <div class="col-sm-12">#}
+{#                    <div class="panel panel-default text-center" style="padding: 0; position: relative;">#}
+{#                        <div class="panel-heading text-right" id="card-nav">#}
+{#                            <a href="#view-product/item7">#}
+{#                                <span class="glyphicon glyphicon-eye-open"> </span> View#}
+{#                            </a>#}
+{#                        </div>#}
+{#                        <div class="panel-body" style="padding: 0;">#}
+{#                            <img src="imgs/beau.jpg" class="img-responsive" alt="item title">#}
+{#                            <a href="#view-product.html/itemid" style="color: #000;"><h4>Module Code(s)</h4></a>#}
+{#                            <p style="padding: 0"><b>R350</b></p>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#            <!-- loop ends here -->#}
+{#        </div>#}
+    </div>
+</div>
+</section>
+
+</div>
+{% include 'footer.html' %}
+<script>
+            function addToCartHandler(element) {
+                $(document).ready(function () {
+                    var id = element.id.slice(9, element.id.length);
+                    $.ajax({
+                        url: '{{ url_for('add_to_cart') }}',
+                        data: {'id':id},
+                        type: 'GET',
+                        success: function (response) {
+                            window.location.reload();
+                            console.log(response);
+                        },
+                        error: function (error) {
+                        console.log(error);
+                    }
+                    })
+
+            })
+            }
+    </script>
+<script src="../app/static/js/javascript.js"></script>
+    <script src="../app/static/js/jquery-3.3.1.js"></script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+@font-face{
+    font-family: 'Heebo';
+}
+html, body{
+    padding: 0;
+    margin: 0;
+    font-family: "Heebo",helvetica, sans-sans-serif;
+    font-weight: 548;
+    color: #0f0f0f;
+    font-size: 11pt;
+    overflow-x: hidden;
+}
+/* scrollbar */
+*::-webkit-scrollbar{
+    border-radius: 10px;
+    width: 6px;
+    background: none;
+}
+*::-webkit-scrollbar-thumb{
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(10, 44, 56,0.3);
+    background: #555;
+}
+*::-webkit-scrollbar-track{
+    box-shadow: inset 0 0 6px rgba(10, 44, 56,0.3);
+    border-radius: 10px;
+    background: #f5f5f5;
+}
+/* navbar */
+.custom-nav{
+    border-radius: 0;
+    background: #0a2c38; /* prev 1976d2 */
+    border: 0px #fff;
+    border-bottom: #eee;
+    height: 68px;
+    padding: 1px 4px;
+}
+.custom-nav a{
+    color: #fff !important;
+    padding: 22px 20px;
+    transition:color 0.2s linear 0.1s;
+    -webkit-transition:color 0.2s linear 0.1s;
+    -moz-transition:color 0.2s linear 0.1s;
+    -ms-transition:color 0.2s linear 0.1s;
+    -o-transition:color 0.2s linear 0.1s;
+}
+.custom-nav ul li a:hover, .custom-navu ul li a:active, .custom-nav ul li a:focus{
+    background: #02232f !important; /* prev 1566b7*/
+    border-radius: 2px;
+}
+.navbar-brand{
+    padding: 0 4px;
+    font-family: "HeeboZ", helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 24pt;
+    height: 68px;
+    line-height: 28px;
+}
+.navbar-brand img{
+    max-width: 40px;
+    margin: 0;
+    display: inline-block;
+}
+.custom-nav .col-md-8{
+    background: #0a2c38;
+    margin: 0;
+}
+.nav li a{
+    height: 66px;
+    line-height: 38px;
+    margin: 0px 4px;
+}
+.nav .btn{
+    margin-top: 12px;
+    color: #0a2c38;
+    border: 0px #fff;
+    border-radius: 2px;
+}
+
+/* buttons */
+.btn{
+    min-height: 38px;
+    border-radius: 1px;
+}
+.btn-primary{
+    background: #0a2c38;
+    border-color: #02232f;
+    color: #fff;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active{
+    background: #1566b7;
+    border-color: #1566b7;
+}
+.btn-link{
+    color: #1566b7;
+}
+/* modals/dialogs here */
+.modal-content{
+    border-radius: 3px !important;
+}
+/* panel modifications */
+.panel{
+    padding-bottom: 0px;
+}
+.panel-info{
+    border-color: #1566b7;
+}
+.panel-info>.panel-heading{
+    background: #1566b7;
+    color: #fff;
+    border-color: #1566b7;
+}
+
+/* signup & login form */
+#signup-form input, #login-form input{
+    border: 0px;
+    border-bottom: 1px solid #1976d2;
+    border-radius: 0px;
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
+    background: none;
+}
+/* sections (rows) */
+.top-section{
+    margin-top: 68px;
+    padding-top: 10px;
+    overflow: hidden;
+}
+.top-section .col-md-7{
+    position: absolute;
+    right: 0px;
+    top: 68px;
+    overflow: hidden;
+    max-height: 89.8vmin;
+}
+.top-section img{
+    width: auto;
+    height: 100vh;
+    float: right;
+    position: relative;
+    top: 0px;
+    right: -120px;
+    border-radius: 100% 0 0 20%;
+    border: 10px groove #1976d2;
+}
+.content{
+    margin-top: 68px;
+    padding: 30px 15px;
+}
+footer{
+    background: #444;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+footer a{
+    color: #fff !important;
+    padding-left: 15px;
+}
+footer .col-md-4:nth-child(3){
+    border-left: 2px solid #3c3c3c;
+    border-right: 2px solid #3c3c3c;
+}
+footer h4{
+    border-bottom: 2px solid #fff;
+    padding-bottom: 8px;
+}
+footer h4:before{
+    position: absolute;
+    left: 15px;
+    top: 37px;
+    content: "";
+    height: 2px;
+    width: 60px;
+    background: #1976d2;
+}
+#cp-right{
+    background: #222;
+    padding-top: 16px;
+    width: 100%;
+}
+
+/* media queries */
+@media (max-width: 992px){
+    footer #cp-right{
+        top: 10px;
+    }
+}
+@media (max-width: 768px){
+    .custom-nav .container .row, .custom-nav .container-fluid .row{
+        background: #0a2c38;
+    }
+    .custom-nav .container, .custom-nav .container-fluid{
+        padding: 0;
+    }
+    /* #xs-login-btn{
+        color: #fff;
+        background: none;
+        padding: 0;
+        border: 0px;
+        margin-top: 18px;
+    } */
+    .navbar-toggle{
+        margin-top: 18px;
+        border: 0px;
+    }
+    .navbar-toggle:hover, .navbar-toggle:active, .navbar-toggle:focus{
+        background: black !important;
+    }
+    .nav .btn{
+        color: #fff;
+        background: none;
+        padding: 0 0 0 16px;
+        border: 0px !important;
+        margin-top: 18px;
+    }
+    .nav a{
+        border-bottom: 1px solid #1566b7;
+    }
+}

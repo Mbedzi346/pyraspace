@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block app_content %}
+    <script>  </script>
+<!DOCTYPE html>
+<html lang="en-za">
+<head>
+    <title>Buy and  Sell second hand items here</title>
+    <meta charet="utf-8">
+    <meta name="viewport" content="initial-scale=1.0,width=device-width">
+    <meta name="description" content="Buy, Sell & Market your products to university students on PyraSpace.com">
+</head>
+<body style="background-color: slategrey">
+<style>
+    body{
+            background: url(app/static/imgs/_bg.jpg);
+            background-repeat: repeat-x;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+</style>
+<div class="container-fluid">
+
+<!-- replace the current search bar section with this one -->
+<section class="row" id="search-bar">
+    <div class="col-md-3"></div>
+    <div class="col-md-6 text-centers">
+        <form action="{{ url_for('search') }}" method="get" id="search-form">
+            <div class="form-group">
+                <div class="input-group">
+                    <input type="text" name="search_input" id="search_inputz" placeholder="e.g Introduction to computer science" class="form-control">
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+<section class="row items-row">
+    {% for product in products %}
+    <div class="col-md-3 col-sm-4 col-xs-12">
+        <div class=" card">
+            <div class="panel panel-default">
+    <!-- share button with modal -->
+    <div class="panel-heading text-right" id="card-nav">
+        <a href="javascript: void()" class="btn btn-link" title="Share" data-toggle="modal" data-target="#share-modal{{ product.id }}">
+            Share <span class="glyphicon glyphicon-share-alt"></span>
+        </a>
+    </div>
+    <!-- Share modal -->
+    <div class="modal fade" id="share-modal{{ product.id }}" role="dialog">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h2 class="modal-title">Let friends know about this item!</h2>
+                </div>
+                <div class="modal-body">
+                   <h4><a href="https://pyraspace.com{{ url_for('item', id=product.id) }}">https://pyraspace.com{{ url_for('item', id=product.id) }}</a></h4>
+                   <small class="text-info">Copy the url above and share</small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Dismiss</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--******************************************** -->
+    <div class="panel-body">
+       <img src="{{ product.image_link }}" class="img-responsive item-img" alt="{{ product.title }}">
+    </div>
+    <div class="panel-footer">
+        <!-- item title or name -->
+        <h4 id="title">{{ product.title }}</h4>
+        <p>{{ product.code }}</p>
+        <p>{{ product.description}}</p>
+
+
+        {% if product.location == 'up_hatfield' %}
+            University of Pretoria, Hatfield
+        {% elif product.location == 'univen' %}
+            <p>University of Venda</p>
+        {% elif product.location == 'up_groenkloof' %}
+            <p>University of Pretoria, Groenkloof</p>
+         {% elif product.location == 'up_mamelodi' %}
+            <p>University of Pretoria, Mamelodi</p>
+        {% elif product.location == 'up_prinshof' %}
+            <p>University of Pretoria, Prinshof</p>
+        {% endif %}
+        {% if product.status == 'available' %}
+        <p><label class="label label-success">available</label></p>
+        {% elif product.status == 'sold' %}
+        <p><label class="label label-danger">sold</label></p>
+        {% endif %}
+        <h4 id="title"><b>R {{ product.price }}</b></h4>
+       <div class="btn-group btn-group-justified" >
+            <a href="{{ url_for('item', id=product.id) }}" class="btn btn-info" >
+                <span class="glyphicon glyphicon-eye-open"></span> View
+            </a>
+           {% if product.status == 'available' %}
+            <a  href="javascript: void()" class="btn btn-primary" style = " border:0px solid transparent !important;"  id="addToCart{{ product.id }}" onclick="addToCartHandler(this)" >
+                <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart
+            </a>
+           {% elif product.status == 'sold' %}
+               <a href="javascript: void()" class="btn btn-primary"  disabled id="addToCart{{ product.id }}"  >
+                <span class="glyphicon glyphicon-shopping-cart"></span> Add to Cart
+            </a>
+           {% endif %}
+
+       </div>
+    </div>
+
+        </div>
+    </div>
+    <!-- end of card -->
+    </div>
+    {% endfor %}
+</section>
+{% include 'footer.html' %}
+<button onclick="topFunc()" class="btn btn-primary btn-lg" id="top-btn" title="back to the top">
+    <span class="glyphicon glyphicon-chevron-up"></span>
+</button>
+<a href="{{ url_for('add_item') }}" class="btn btn-success btn-lg" id="quick-add-btn" title="Add new product">
+    <span class="glyphicon glyphicon-plus"></span>
+</a>
+<script>
+    function addToCartHandler(element) {
+        $(document).ready(function () {
+            var id = element.id.slice(9, element.id.length);
+            $.ajax({
+                url: '{{ url_for('add_to_cart') }}',
+                data: {'id':id},
+                type: 'GET',
+                success: function (response) {
+                    window.location.reload();
+                    console.log(response);
+
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+
+        })
+    }
+</script>
+
+</div>
+{% endblock %}

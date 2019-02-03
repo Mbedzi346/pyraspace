@@ -1,0 +1,37 @@
+<footer class="row">
+    <div class="container-fluid">
+        <div class="col-md-12 hidden-xs text-center">
+            <h2>PyraSpace</h2>
+            <!-- we can have social media icons here -->
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>PyraSpace</h4>
+            <ul class="list-unstyled">
+                <li><a href="#all" title="coming soon" disabled>How it works</a></li>
+                <li><a href="#books" title="coming soon" disabled>About us</a></li>
+                <li><a href="#elect" title="coming soon" disabled>Contact us</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>Explore</h4>
+            <ul class="list-unstyled">
+                <li><a href="{{ url_for('index') }}" title="All Items." >All</a></li>
+                <li><a href="{{ url_for('books') }}" title="Books" >Books</a></li>
+                <li><a href="{{ url_for('electronics') }}" title="Electronics" >Electronics</a></li>
+                <li><a href="{{ url_for('other') }}" title="Other Items" >Other</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>Connect with us</h4>
+            <ul class="list-unstyled">
+                <li><a href="#all" title="coming soon" disabled>Facebook</a></li>
+                <li><a href="#books" title="coming soon" disabled>Twitter</a></li>
+                <li><a href="#elect" title="coming soon" disabled>Instagram</a></li>
+                <li><a href="mailto:support@pyraspace.com" title="Email PyraSpace Support" disabled>support@pyraspace.com</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-12 text-center" id="cp-right">
+        <p class="text-small">PyraSpace &copy; 2018, all rights reserved.</p>
+    </div>
+</footer>

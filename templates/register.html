@@ -1,0 +1,113 @@
+<!--
+ * Only accessible by logged in users
+-->
+<!DOCTYPE html>
+<html lang="en-za">
+{% extends 'base.html' %}
+{% block app_content %}
+<body>
+<style>
+    body{
+            background: url(app/static/imgs/_bg.jpg);
+            background-repeat: repeat-x;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+</style>
+<div class="container-fluid">
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div style="padding-top: 80px" class="alert alert-info" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+<section class="row content">
+    <div class="hidden-xs col-sm-3"></div>
+    <div class="col-xs-12 col-sm-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h2>Signup</h2>
+            </div>
+            <div class="panel-body">
+                <p class="text-small text-muted">In order to buy or sell items on Pyraspace and to access more features, you would need an account with Pyraspace</p>
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_errors(form, hiddens="only") }}
+                    {{ wtf.quick_form(form) }}
+                </form>
+                <p style="padding: 8px 4px;">
+                    By signing up, you agree to our <a href="javascript: void()">terms and conditions</a><br>
+                    Have an account? Click <a href="#login" data-toggle="modal" data-target="#login-modal" class="text-primary" style="padding: 0;">here to Log in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<footer class="row">
+    <div class="container-fluid">
+        <div class="col-md-12 hidden-xs text-center">
+            <h2>PyraSpace</h2>
+            <!-- we can have social media icons here -->
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>PyraSpace</h4>
+            <ul class="list-unstyled">
+                <li><a href="#all" title="coming soon" disabled>How it works</a></li>
+                <li><a href="#books" title="coming soon" disabled>About us</a></li>
+                <li><a href="#elect" title="coming soon" disabled>Contact us</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>Explore PyraSpace</h4>
+            <ul class="list-unstyled">
+                <li><a href="#all" title="coming soon" disabled>All</a></li>
+                <li><a href="#books" title="coming soon" disabled>Books</a></li>
+                <li><a href="#elect" title="coming soon" disabled>Electronics</a></li>
+                <li><a href="#other" title="coming soon" disabled>Other</a></li>
+            </ul>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-12 extra-links">
+            <h4>Connect with us</h4>
+            <ul class="list-unstyled">
+                <li><a href="#all" title="coming soon" disabled>Facebook</a></li>
+                <li><a href="#books" title="coming soon" disabled>Twitter</a></li>
+                <li><a href="#elect" title="coming soon" disabled>Instagram</a></li>
+                <li><a href="#other" title="coming soon" disabled>support@pyraspace.com</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-12 text-center" id="cp-right">
+        <p class="text-small">PyraSpace &copy; 2018, all rights reserved.</p>
+    </div>
+</footer>
+<!-- Login modal -->
+<div class="modal fade" id="login-modal" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h2 class="modal-title">Log in</h2>
+            </div>
+            <div class="modal-body">
+                <form  method="post">
+                    {{ form.hidden_tag() }}
+                    {{ wtf.form_errors(form1, hiddens="only") }}
+                    {{ wtf.quick_form(form1) }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- ignore: use correct form id later -->
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <p>
+                    <a href="{{ url_for('forgot_password') }}" data-toggle="modal" data-target="#login-modal" class="text-primary" style="padding: 0;">Forgot password</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+{% endblock %}
+</html>

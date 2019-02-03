@@ -1,0 +1,467 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+
+<body>
+<link rel="stylesheet" href="../app/static/css/bootstrap.css">
+    <link rel="stylesheet" href="../app/static/css/styles.css">
+    <link rel="stylesheet" href="../app/static/css/zipline.css">
+    <link rel="stylesheet" href="../app/static/fonts/">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="../app/static/js/jquery-3.3.1.js"></script>
+    <script src="../app/static/js/bootstrap.js"></script>
+    <script src="../app/static/js/javascript.js"></script>
+    <script src="../app/static/js/jquery-3.3.1.js"></script>
+
+<div class="container-fluid">
+<section class="row content" style="padding: 0px;">
+
+    <div class="col-xs-8 col-sm-3 col-md-2" id="side-nav" style="color: white;">
+        <h1 class="text-center"><span class="glyphicon glyphicon-user"></span></h1>
+        <div class="text-center">{{ current_user.first_name }} {{ current_user.last_name }}</div>
+        <div class="text-center">{{ current_user.email }}</div><br>
+        <a href="javascript:void(0)" class="closebtn hidden-sm hidden-md hidden-lg" onclick="closeNav()">&times;</a>
+        <a href="{{ url_for('profile_landing') }}" title="My profile">
+            <span class="glyphicon glyphicon-user"></span>
+            Profile
+        </a>
+        <a href="{{ url_for('manage_items') }}" title="Manage products">
+            <span class="glyphicon glyphicon-wrench"></span>
+            My Products
+        </a>
+        <a href="{{ url_for('add_item') }}" title="Add New products">
+            <span class="glyphicon glyphicon-plus"></span>
+            Add Product
+        </a>
+        <a href="{{ url_for('purchases') }}" title="My Purchases">
+            <span class="glyphicon glyphicon-shopping-cart"></span>
+            My Purchases
+        </a>
+        <a href="{{ url_for('incoming_orders') }}" title="My Incoming Orders">
+            <span class="glyphicon glyphicon-download"></span>
+            My Incoming Orders
+        </a>
+    </div>
+    <div class="hidden-xs hidden-sm col-md-2" style="float: right"></div>
+    <div class="col-xs-12 col-sm-9 col-md-6"  id="main" style="float: right">
+        <button class="btn btn-primary hidden-sm hidden-md hidden-lg" style="margin-bottom: 6px;" onclick="openNav()">
+            <span class="glyphicon glyphicon-cog"></span> Menu
+        </button>
+        {% if page == 'add_item' %}
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h5><span class="glyphicon glyphicon-plus"></span> Add New Product</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-danger" role="alert">{{ message }}</div>
+            {% endfor %}
+    {% endif %}
+    {% endwith %}
+            <div class="panel-body" style="padding-bottom: 4px;">
+                <form  method="post" enctype="multipart/form-data" id="addItemForm">
+                {{ form.hidden_tag() }}
+                {{ wtf.form_errors(form, hiddens="only") }}
+                {{ wtf.quick_form(form) }}
+                </form>
+            </div>
+            <div class="panel-footer text-right" style="padding: 6px 15px 6px 6px;">
+                <!--
+                    * html5 allows submit buttons to be outside the form tags
+                    * this button submits the add product form data
+                -->
+            </div>
+        </div>
+    </div>
+    <div class="hidden-xs hidden-sm col-md-2" style="float: right"></div>
+        {% elif page=='manage_items' %}
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <div class="panel-title">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h5><span class="glyphicon glyphicon-th-list"></span> My Products</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    {% for product in products %}
+                    <div class="row">
+                        <div class="col-xs-2"><img class="img-responsive" src="../{{ product.image_link }}">
+                        </div>
+                        <div class="col-xs-4">
+                            <h4 class="product-name"><strong>{{ product.title }}</strong></h4><h4><small>{{ product.description }}<br>{{ product.details }}</small></h4>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="col-xs-12 col-sm-3">
+                                <button type="button" class="btn btn-link btn-xs text-center" data-toggle="modal" id="updateItem{{ product.id }}" data-target="#update-5" onclick="updateProduct(this)">
+                                    <span class="glyphicon glyphicon-pencil"> </span>
+                                    Edit
+                                </button>
+                                <div class="modal fade" id="update-5" role="dialog">
+                                    <div class="modal-dialog modal-md">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h2 class="modal-title">Update Product</h2>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="panel-body" style="padding-bottom: 4px;">
+                                                <form  method="post" enctype="multipart/form-data">
+                                                {{ update_form.hidden_tag() }}
+                                                {{ wtf.form_errors(update_form, hiddens="only") }}
+                                                {{ wtf.quick_form(update_form) }}
+                                                </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-3">
+                                <button type="button" class="btn btn-link btn-xs text-center"
+                                        {% if product.status == 'sold' %} disabled {% endif %}
+                                        id="setId{{ product.id }}" onclick="setId(this)" data-toggle="modal"
+                                        data-target="#confirm-sold-{{ product.id }}" style="color: #44a942;">
+                                    <span class="glyphicon glyphicon-check"> </span>
+                                    {% if product.status == 'available' %}
+                                        Mark as Sold
+                                    {% elif product.status == 'sold' %}
+                                        Sold!
+                                    {% endif %}
+                                </button>
+                            <form action="https://www.payfast.co.za/eng/process" method="POST">
+                <input type="hidden" name="merchant_id" value="13457516">
+                <input type="hidden" name="merchant_key" value="hvy51mk1svng8">
+                <input type="hidden" name="return_url" value="https://www.pyraspace.com/return">
+                <input type="hidden" name="cancel_url" value="https://www.pyraspace.com/cancel">
+                <input type="hidden" name="notify_url" value="https://www.pyraspace.com/notify/">
+                <input type="hidden" name="m_payment_id" value="01AB">
+                <input type="hidden" name="amount" value="10.00">
+                <input type="hidden" name="item_name" value="PyraSpace Ad Fee">
+                <input type="hidden" name="item_description" value="Add Fee">
+                <input type="hidden" name="custom_int1" value="{{ product.id }}">
+                <input type="hidden" name="custom_int2" value="{{ current_user.id }}">
+
+                    <button type="submit" class="btn btn-primary">Pay Now</button>
+                                <div class="modal fade" id="confirm-sold-{{ product.id }}" role="dialog">
+                                    <div class="modal-dialog modal-sm">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center">
+                                                <h4>
+                                                    Are you sure you want to mark<br>
+                                                    {{ product.title }}<br>as sold?
+                                                </h4>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <!--
+                                                    * confirm button invokes the action
+                                                -->
+                                                <button type="submit" name="mark_as_sold_btn" id="markSold{{ product.id }}" onclick="markAsSold(this)" class="btn btn-primary">Confirm</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 text-right">
+                                <h6><strong>R {{ product.price }}</strong></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <!-- end of loop -->
+                    {% endfor %}
+                </div>
+
+                </form>
+            </div>
+                    <script>
+                        function updateProduct(element) {
+                            $(document).ready(function () {
+                                var id = element.id.slice(10, element.id.length);
+                                $.ajax({
+                                    url: '{{ url_for('edit') }}',
+                                    data: {'id':id},
+                                    type: 'GET',
+                                    success: function (response) {
+
+                                        console.log(response);
+
+                                    },
+                                    error: function (error) {
+                                    console.log(error);
+                                }
+                                })
+                        })
+                        }
+                        function markAsSold(element) {
+                            $(document).ready(function () {
+                                var id = element.id.slice(8, element.id.length);
+                                $.ajax({
+                                    url: '{{ url_for('mark_sold') }}',
+                                    data: {'mark_sold':id},
+                                    type: 'GET',
+                                    success: function (response) {
+                                        console.log(response)
+                                        window.location = "{{ url_for('manage_items') }}"
+                                    },
+                                    error: function (error) {
+                                    console.log(error);
+                                }
+                                })
+                        })
+                        }
+                        function setId(element) {
+                            $(document).ready(function () {
+                                var id = element.id.slice(5, element.id.length);
+                                $.ajax({
+                                    url: '{{ url_for('set_id') }}',
+                                    data: {'sold_id':id},
+                                    type: 'GET',
+                                    success: function (response) {
+                                        console.log(response)
+                                       // window.location = "{{ url_for('manage_items') }}"
+                                    },
+                                    error: function (error) {
+                                    console.log(error);
+                                }
+                                })
+                        })
+                        }
+                </script>
+        {% elif page=='profile_landing' %}
+        <div class="col-xs-12 col-sm-9 col-md-10"  id="main" style="float: right">
+    <button class="btn btn-primary hidden-sm hidden-md hidden-lg" style="margin-bottom: 6px;" onclick="openNav()">
+        <span class="glyphicon glyphicon-cog"></span> Menu
+    </button>
+    <div class="panel panel-info">
+        <div class="panel-heading">
+            <div class="panel-title">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h5><span class="glyphicon glyphicon-dashboard"></span> Profile and Statistics<!--Manage your credentials here--></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="#stats">
+                                <span class="glyphicon glyphicon-stats"></span>
+                                Statistics
+                            </a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#creds">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                Update Credentials
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="stats" class="tab-pane fade in active">
+                            <h2>Statistics</h2>
+                            <div class="row" style="padding: 4px 16px;">
+                                <div class="col-xs-12 col-sm-8">
+                                    <!-- pie or line graph here -->
+                                </div>
+                                <div class="col-xs-12 col-sm-4">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 btn-success">
+                                            <h3 style="word-spacing: 10px;">
+                                                <span class="glyphicon glyphicon-tags"></span> {{ total }}
+                                            </h3>
+                                            <h4>Total Ads</h4>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 btn-warning">
+                                            <h3 style="word-spacing: 10px;">
+                                                <span class="glyphicon glyphicon-tags"></span><br>{{ total - available }}
+                                            </h3>
+                                            <h4>Sold Items</h4>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 btn-danger">
+                                            <h3 style="word-spacing: 10px;">
+                                                <span class="glyphicon glyphicon-tags"></span> {{ available }}
+                                            </h3>
+                                            <h4>Available Items</h4>
+                                        </div>
+
+                                        <div class="col-xs-12 col-sm-6 btn-primary">
+                                            <h3 style="word-spacing: 10px;">
+                                                <span class="glyphicon glyphicon-tags"></span> 78%
+                                            </h3>
+                                            <h4>Items Sold</h4>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 btn-info">
+                                            <h3 style="word-spacing: 10px;">
+                                                <span class="glyphicon glyphicon-tags"></span> 10%
+                                            </h3>
+                                            <h4>Unpaid Ads</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Credentials section -->
+                        <div id="creds" class="tab-pane fade">
+                            <h2>Credentials</h2>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-7">
+                                    <!-- email form -->
+                                    <!--
+                                        * only fill the email and contact number fields with values from the database
+                                        * users have to physically type the password
+                                    -->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><h4>Update Email</h4></div>
+                                        <div class="panel-body">
+                                            <form action="profile.html" method="post">
+                                                <div class="form-group">
+                                                    <label for="email">New Email: </label>
+                                                    <input type="email" class="form-control" name="email" id="email" placeholder="e.g john.doe@gmail.com" value="<% db email %>" readonly onfocus="this.removeAttribute('readonly')">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="email">New Contact Number: </label>
+                                                    <input type="text" class="form-control" name="cnum" id="cnum" placeholder="e.g 074 494 3028" value="<% db contact num %>">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="n_pass">Password: </label><br>
+                                                    <small class="text-info">For security reasons, we need your password to update your information</small>
+                                                    <input type="password" class="form-control" name="n_pass" id="n_pass">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-block">Update Contact Information</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- password form -->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading"><h4>Update Password</h4></div>
+                                        <div class="panel-body">
+                                            <form action="profile.html" method="post" id="pass-form">
+                                                <div class="form-group" id="new-pass">
+                                                    <label for="new_pass">New Password: </label>
+                                                    <input type="password" class="form-control" name="new_pass" id="new_pass" placeholder="your new password here">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="old_pass">Old Password: </label><br>
+                                                    <small class="text-info">For security reasons, we need your password to update your information</small>
+                                                    <input type="password" class="form-control" name="old_pass" id="old_pass" placeholder="your old password here">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary btn-block">Update Password</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+        {% elif page=='purchases' %}
+         <div class="table-responsive">
+                        <table class="table table-striped table-light">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for product in products %}
+
+                                <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td>{{ product.title }}</td>
+                                    <td>R{{ product.price }}</td>
+                                    <td>{{ product.description }}</td>
+                                    <td>{{ product.status }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+        {% elif page == 'incoming_orders' %}
+         <div class="table-responsive">
+                        <table class="table table-striped table-light">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">PyraSpace Ad Fee</th>
+                                <th scope="col">PyraSpace Ad Fee Settled</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for product in products %}
+
+                                <tr>
+                                    <th scope="row">{{ loop.index }}</th>
+                                    <td>{{ product.title }}</td>
+                                    <td>R{{ product.price }}</td>
+                                    <td>R10</td>
+                                    <td>{{ product.ad_fee_paid }}</td>
+                                    <td>{{ product.status }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+        {% endif %}
+</section>
+<script src="app/static/js/javascript.js"></script>
+<script>
+    $(document).ready(function () {
+        set = false
+    $('#addItemForm').submit(function () {
+        pattern = /((\+27|0)\d{9})/;
+        input = $('#description').val();
+        input = input.replace(/\s+/g, '');
+        console.log('Hello');
+        console.log(input);
+        if(pattern.test(input)){
+            if(!set)
+                $('#description').after("<small id='error' style='color:red'>PyraSpace rules forbid adding contact details to items.<br></span>");
+            set = true
+            return false
+        }
+    });
+    $('#description').after("<span id='count'></span>");
+    $('#count').after("<small id='descr_'>Brief Description, such as book condition or book edition.</small>")
+    $('#price').after("<small id='price_description'>Please note no R currency symbol.</small>")
+    console.log('Ready')
+        })
+        </script>
+<!-- footer isn't working out well with the side navbar so I removed it -->
+</div>
+</body>
+
+{% endblock %}
+

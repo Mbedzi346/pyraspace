@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <body>
+<section class="row content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-sm-12" id="items-container">
+                <div class="panel panel-info">
+				<div class="panel-heading">
+					<div class="panel-title">
+						<div class="row">
+							<div class="col-xs-6 col-sm-9">
+								<h5><span class="glyphicon glyphicon-shopping-cart"></span> Trolley </h5>
+							</div>
+							<div class="col-xs-6 col-sm-3" style="float: right; padding: 4px;">
+								<button type="button" class="btn btn-primary btn-sm btn-block" onclick="location = '{{ url_for('index') }}'
+                                        ">
+									<span class="glyphicon glyphicon-share-alt"></span> Continue shopping
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+                    <!-- loop starts here -->
+                    {% for product in products %}
+					<div class="row">
+						<div class="col-xs-2"><img class="img-responsive" style="height: 100% !important;" src="{{ product.image_link }}">
+						</div>
+						<div class="col-xs-4">
+							<h4 class="product-name"><strong>{{ product.title }}</strong></h4><h4><small>{{ product.description }}</small></h4>
+						</div>
+						<div class="col-xs-6">
+							<div class="col-xs-8 col-sm-6 text-right">
+								<h6><strong>R{{ product.price }} <span class="text-muted hidden-xs">x</span></strong></h6>
+							</div>
+							<div class="hidden-xs col-sm-4">
+								<input type="text" class="form-control input-sm" value="1" disabled>
+							</div>
+							<div class="col-xs-4 col-sm-2">
+								<button type="button" class="btn btn-link btn-xs" id="removeItem{{ product.id }}" onclick="removeItem(this)">
+									<span class="glyphicon glyphicon-trash"> </span>
+                                    <span class="hidden-xs"> Delete</span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<hr>
+                    {% endfor %}
+					<!-- end of loop -->
+				</div>
+				<div class="panel-footer">
+					<div class="row text-center">
+						<div class="col-xs-6 col-sm-9">
+							<h4 class="text-left">Total: <strong style="color: black;">R{{ total }}</strong></h4>
+                            <h4 class="text-left small">The seller will handle to delivery of the product.</h4>
+						</div>
+						<div class="col-xs-6 col-sm-3" style="padding: 25px;">
+							<button type="button" class="btn btn-success btn-block" onclick="location='{{ url_for('confirm_order') }}'">
+								Place Order!
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+            <!-- </div> -->
+            <!-- <div class="col-xs-12 col-md-4 col-sm-5">
+                <div class="panel panel-default" id="cart-summary">
+                    <div class="panel-header" style="padding: 15px"><h4>Summary</h4></div>
+                    <div class="panel-body">
+                        <ul class="list-unstyled">
+                            <li>Items in cart: 7</li>
+                            <li>Delivery: <span class="text-success">Free</span></li>
+                        </ul>
+                        <span class="pull-right"><h4>Total: R 1 350</h4></span>
+                        <button class="btn btn-primary btn-block">Confirm</button>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    </div>
+</section>
+    {% include 'footer.html' %}
+    </body>
+    <script>
+            function removeItem(element) {
+                $(document).ready(function () {
+                    var id = element.id.slice(10, element.id.length);
+                    $.ajax({
+                        url: '{{ url_for('remove_item') }}',
+                        data: {'id':id},
+                        type: 'GET',
+                        success: function (response) {
+                            location.reload()
+                        },
+                        error: function (error) {
+                        console.log(error);
+                    }
+                    })
+            })
+            }
+    </script>
+
+{% endblock %}

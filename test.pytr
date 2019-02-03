@@ -1,0 +1,20 @@
+server {
+
+        listen 80;
+        server_name pyraspace.com www.pyraspace.com;
+        return 301 https://$host$request_uri;
+}
+server {
+#       listen 80 default_server;
+#       listen [::]:80 default_server;
+        listen 443 ssl;
+        server_name pyraspace.com www.pyraspace.com;
+
+        ssl_certificate /etc/letsencrypt/live/pyraspace.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/pyraspace.com/privkey.pem;
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+
+        }
